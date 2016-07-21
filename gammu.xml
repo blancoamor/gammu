@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="gammu_sentitems_tree" model="ir.ui.view">
+            <field name="name">gammu.sentitems.tree</field>
+            <field name="model">gammu.sentitems</field>
+            <field name="arch" type="xml">
+                <tree string="Gamu senditems">
+                    <field name="name"/>
+                    <field name="sending_datetime"/>
+                    <field name="delivery_datetime"/>
+                    <field name="text"/>
+                </tree>
+            </field>
+        </record>
+        <record id="gammu_sentitems_form" model="ir.ui.view">
+            <field name="name">gammu.sentitems.form</field>
+            <field name="model">gammu.sentitems</field>
+            <field name="arch" type="xml">
+                <form string="Gammu senditems" version="7.0">
+                    <group>
+                        <field name="name"/>
+                        <field name="sending_datetime"/>
+                        <field name="delivery_datetime"/>
+                        <field name="text"/>
+                        <field name="creatorid"/>
+                        <field name="senderid"/>
+                        <field name="status"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+        <record id="action_gammusentitems" model="ir.actions.act_window">
+            <field name="name">Gammu senditems</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">gammu.sentitems</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="gammu_sentitems_tree"/>
+        </record>
+        <menuitem id="menu_gammu" parent="base.menu_base_config" sequence="1"/>
+        <menuitem action="action_gammusentitems" id="menu_action_gammu_sentitems" parent="gammu.menu_gammu" sequence="1"/>
+        <record id="gammu_outbox_tree" model="ir.ui.view">
+            <field name="name">gammu.outbox.tree</field>
+            <field name="model">gammu.outbox</field>
+            <field name="arch" type="xml">
+                <tree string="Gammu outbox">
+                    <field name="name"/>
+                    <field name="sending_datetime"/>
+                    <field name="creatorid"/>
+                    <field name="text"/>
+                </tree>
+            </field>
+        </record>
+        <record id="gammu_outbox_form" model="ir.ui.view">
+            <field name="name">gammu.outbox.form</field>
+            <field name="model">gammu.outbox</field>
+            <field name="arch" type="xml">
+                <form string="Gammu outbox" version="7.0">
+                    <group>
+                        <field name="name"/>
+                        <field name="text"/>
+                        <field name="sending_datetime"/>
+                        <field name="send_before"/>
+                        <field name="send_after"/>
+                        <field name="creatorid"/>
+                        <field name="multipart"/>
+                        <field name="senderid"/>
+                        <field name="sending_time_out"/>
+                        <field name="retries"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+        <record id="action_gammuoutbox" model="ir.actions.act_window">
+            <field name="name">Gammu outbox</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">gammu.outbox</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="gammu_outbox_tree"/>
+        </record>
+        <menuitem action="action_gammuoutbox" id="menu_action_gammu_outbox" parent="gammu.menu_gammu" sequence="1"/>
+        <record id="gammu_inbox_tree" model="ir.ui.view">
+            <field name="name">gammu.inbox.tree</field>
+            <field name="model">gammu.inbox</field>
+            <field name="arch" type="xml">
+                <tree string="Gammu inbox">
+                    <field name="name"/>
+                    <field name="text"/>
+                    <field name="processed"/>
+                </tree>
+            </field>
+        </record>
+        <record id="gammu_inbox_form" model="ir.ui.view">
+            <field name="name">gammu.inbox.form</field>
+            <field name="model">gammu.inbox</field>
+            <field name="arch" type="xml">
+                <form string="Gammu inbox" version="7.0">
+                    <group>
+                        <field name="name"/>
+                        <field name="text"/>
+                        <field name="processed"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+        <record id="action_gammuinbox" model="ir.actions.act_window">
+            <field name="name">Gammu inbox</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">gammu.inbox</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="gammu_inbox_tree"/>
+        </record>
+        <menuitem action="action_gammuinbox" id="menu_action_gammu_inbox" parent="gammu.menu_gammu" sequence="1"/>
+
+        <record id="gammu_expected_responses" model="ir.ui.view">
+            <field name="name">gammu.expected.responses.tree</field>
+            <field name="model">gammu.expected.responses</field>
+            <field name="arch" type="xml">
+                <tree string="Gammu expected responses">
+                    <field name="name"/>
+                    <field name="text"/>
+                    <field name="processed"/>
+                </tree>
+            </field>
+        </record>
+        <record id="gammu_expected_responses_form" model="ir.ui.view">
+            <field name="name">gammu.expected.responses.form</field>
+            <field name="model">gammu.expected.responses</field>
+            <field name="arch" type="xml">
+                <form string="Gammu expected responses" version="7.0">
+                    <group>
+                        <field name="name"/>
+                        <field name="text"/>
+                        <field name="timeout"/>
+                        <field name="inbox_id"/>
+                        <field name="model"/>
+                        <field name="function"/>
+                        <field name="args"/>
+                        <field name="creatorid"/>
+                        <field name="processed"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+        <record id="action_gammu_expected_responses" model="ir.actions.act_window">
+            <field name="name">Gammu expected responses</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">gammu.expected.responses</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="gammu_expected_responses"/>
+        </record>
+        <menuitem action="action_gammu_expected_responses" id="menu_action_gammu_expected_responses" parent="gammu.menu_gammu" sequence="1"/>
+
+
+    </data>
+</openerp>
