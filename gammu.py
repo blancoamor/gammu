@@ -402,7 +402,7 @@ class gammu_outbox(models.Model):
           vals['multipart']=True
         
         text=[vals['text'][ind:ind+160] for ind in range(0, len(vals['text']), 160)]
-        #first_part=text.pop(0)
+        first_part=text.pop(0)
 
         self._cr.execute("""insert into outbox (
             "InsertIntoDB","UpdatedInDB","DestinationNumber","TextDecoded","SendingDateTime",
@@ -414,9 +414,8 @@ class gammu_outbox(models.Model):
 
 
         id_new, = self._cr.fetchone()
-        if vals['multipart']: 
-          secuence=1
-          for multipart_text in text :
+        secuence=2
+        for multipart_text in text :
               self._cr.execute("""insert into outbox_multipart ("ID","SequencePosition","TextDecoded") 
                                   values
                                   ("""+str(id_new)  + ","+str(secuence) + ",%s)" , (multipart_text,))
