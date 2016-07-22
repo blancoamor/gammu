@@ -72,7 +72,7 @@ class gammu(models.Model):
             -- Sequence declarations for tables' primary keys
             --
 
-            --CREATE SEQUENCE inbox_ID_seq;
+              --CREATE SEQUENCE inbox_ID_seq;
 
             --CREATE SEQUENCE outbox_ID_seq;
 
@@ -398,16 +398,30 @@ class gammu_outbox(models.Model):
     @api.model
     def create(self,vals):
 
+        if len(vals['text'])> 160:
+          vals['multipart']=True
+        
+        text=[vals['text'][ind:ind+160] for ind in range(0, len(vals['text']), 160)]
+        first_part=text.pop(0)
+
         self._cr.execute("""insert into outbox (
             "InsertIntoDB","UpdatedInDB","DestinationNumber","TextDecoded","SendingDateTime",
             "SendBefore","SendAfter","CreatorID","MultiPart","SenderID","SendingTimeOut","Retries"
-            ) values (now(),now(),%s,%s,%s,%s,%s,%s,%s,'',%s,0) RETURNING "ID" """, (vals['name'],vals['text'],
+            ) values (now(),now(),%s,%s,%s,%s,%s,%s,%s,'',%s,0) RETURNING "ID" """, (vals['name'],first_part,
             vals['sending_datetime'],vals['send_before'],vals['send_after'],vals['creatorid'],vals['multipart'],
             vals['sending_time_out']
             ))
 
 
         id_new, = self._cr.fetchone()
+        secuence=1
+        for multipart_text in text :
+            self._cr.execute("""insert into outbox_multipart ("ID","SequencePosition","TextDecoded") 
+                                values
+                                ("""+str(id_new)  + ","+str(secuence) + ",%s)" , (multipart_text,))
+            secuence = secuence +1
+
+
         recs = self.browse(id_new)
 
         
