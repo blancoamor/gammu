@@ -37,6 +37,23 @@
             <field name="view_type">form</field>
             <field name="view_id" ref="gammu_sentitems_tree"/>
         </record>
+        <record id="gammu_sentitems_filter" model="ir.ui.view">
+            <field name="name">gammu.sentitems.search</field>
+            <field name="model">gammu.sentitems</field>
+            <field name="arch" type="xml">
+                <search string="Search survey">
+                   <field name="name"/>
+                    <field name="sending_datetime"/>
+                    <field name="delivery_datetime"/>
+                    <field name="text"/>
+                    <field name="creatorid"/>
+                    <field name="senderid"/>
+                    <field name="status"/>
+                    <filter domain="[('create_date','&gt;=',time.strftime('%%Y-%%m-01'))]" name="this_mont" string="this month"/>
+                    <filter context="{'group_by' : 'name'}" domain="[]" string="name"/>
+                </search>
+            </field>
+        </record>
         <menuitem id="menu_gammu" parent="base.menu_base_config" sequence="1"/>
         <menuitem action="action_gammusentitems" id="menu_action_gammu_sentitems" parent="gammu.menu_gammu" sequence="1"/>
         <record id="gammu_outbox_tree" model="ir.ui.view">
@@ -103,6 +120,24 @@
                 </form>
             </field>
         </record>
+                <record id="gammu_sentitems_filter" model="ir.ui.view">
+            <field name="name">gammu.sentitems.search</field>
+            <field name="model">gammu.sentitems</field>
+            <field name="arch" type="xml">
+                <search string="Search survey">
+                   <field name="name"/>
+                    <field name="sending_datetime"/>
+                    <field name="delivery_datetime"/>
+                    <field name="text"/>
+                    <field name="creatorid"/>
+                    <field name="senderid"/>
+                    <field name="status"/>
+                    <filter domain="[('create_date','&gt;=',time.strftime('%%Y-%%m-01'))]" name="this_mont" string="this month"/>
+                    <filter context="{'group_by' : 'name'}" domain="[]" string="name"/>
+                </search>
+            </field>
+        </record>
+
         <record id="action_gammuinbox" model="ir.actions.act_window">
             <field name="name">Gammu inbox</field>
             <field name="type">ir.actions.act_window</field>
@@ -110,8 +145,24 @@
             <field name="view_type">form</field>
             <field name="view_id" ref="gammu_inbox_tree"/>
         </record>
-        <menuitem action="action_gammuinbox" id="menu_action_gammu_inbox" parent="gammu.menu_gammu" sequence="1"/>
 
+        <record id="gammu_inbox_filter" model="ir.ui.view">
+            <field name="name">gammu.inbox.search</field>
+            <field name="model">gammu.inbox</field>
+            <field name="arch" type="xml">
+                <search string="Search survey">
+                   <field name="name"/>
+                    <field name="text"/>
+                    <field name="processed"/>
+
+                    <filter domain="[('create_date','&gt;=',time.strftime('%%Y-%%m-01'))]" name="this_mont" string="this month"/>
+                    <filter context="{'group_by' : 'name'}" domain="[]" string="name"/>
+                </search>
+            </field>
+        </record>
+
+
+        <menuitem action="action_gammuinbox" id="menu_action_gammu_inbox" parent="gammu.menu_gammu" sequence="1"/>
         <record id="gammu_expected_responses" model="ir.ui.view">
             <field name="name">gammu.expected.responses.tree</field>
             <field name="model">gammu.expected.responses</field>
@@ -150,7 +201,5 @@
             <field name="view_id" ref="gammu_expected_responses"/>
         </record>
         <menuitem action="action_gammu_expected_responses" id="menu_action_gammu_expected_responses" parent="gammu.menu_gammu" sequence="1"/>
-
-
     </data>
 </openerp>

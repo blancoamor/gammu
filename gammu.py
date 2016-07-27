@@ -36,6 +36,7 @@ from openerp.tools.translate import _
 from openerp.modules import load_information_from_description_file
 
 
+import re 
 from openerp.tools.translate import _
 
 import logging
@@ -449,7 +450,7 @@ class gammu_sentitems(models.Model):
             select "ID" as id, "InsertIntoDB" as create_date ,"UpdatedInDB" as write_date , "DestinationNumber" as name,
             "TextDecoded" as text , "SendingDateTime" as sending_datetime,"DeliveryDateTime" as delivery_datetime, 
             "CreatorID" as creatorid,"SenderID" as senderid,"Status" as status
-            from sentitems
+            from sentitems s1 where "SequencePosition" =1
 
         )""")   
 
@@ -495,7 +496,7 @@ class gammu_inbox(models.Model):
           #TODO orphan funtion
           msg={
               'name':unprocess['name'],
-              'text':'Su mensaje no pudo ser procesado. Comuniquese a xxx',
+              'text':'Este es un servicio automatizado. Por cualquier consulta comuniquese al 0810 666 8964',
               'sending_datetime': datetime.now(),
               'send_before':'23:59:59',
               'send_after':'00:00:00',
@@ -503,7 +504,7 @@ class gammu_inbox(models.Model):
               'multipart':False,
               'sending_time_out':datetime.now(),
           }
-          self.env['gammu.outbox'].create(msg)
+          #self.env['gammu.outbox'].create(msg)
           self.write([unprocess['id']],{'processed':True})
             
 
