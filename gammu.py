@@ -470,7 +470,7 @@ class gammu_inbox(models.Model):
     def create(self,vals):
       #TODO add raise
       return False 
-
+                                                                                                                                                                                                                                                                                                                                                                                                                                    
     @api.model
     def write(self,ids,vals):
       for inbox_id in ids : 
@@ -478,17 +478,23 @@ class gammu_inbox(models.Model):
           self._cr.execute("""update inbox set "Processed"=%s where "ID"= %d """ % (vals['processed'],inbox_id))
       return ids 
 
+    @api.model
     def process_inbox(self):
-
+      _logger.info('Inicio Proceso')
       unprocess_items=self.search_read([('processed','=',False)],['name','text'])
       expected_responses_obj=self.env['gammu.expected.responses']
+      llamadaPerdida=re.compile('Recibiste.*llamada')
 
       for unprocess in unprocess_items:
+        _logger.info('Recorro Items sin procesar %r ' , unprocess_items)
 
         response_ids=expected_responses_obj.search_read([('processed','=',False),('name','=',unprocess['name'])],['model', 'function', 'args'])
-        if response_ids :
+        # Existe respuesta y no es una  llamada perdida
+        if response_ids and llamadaPerdida.search(unprocess['text']):
           for response_id in response_ids:
-            response = expected_responses_obj._callback_response(response_id['model'], response_id['function'], response_id['args'],unprocess['text'])
+            _logger.info('Recorro las respuestas %r ' , response_id)
+
+            response = self._callback_response(response_id['model'], response_id['function'], response_id['args'],unprocess['text'])
             if response != False :
               self.write([unprocess['id']],{'processed':True})
         else :
@@ -507,6 +513,22 @@ class gammu_inbox(models.Model):
           #self.env['gammu.outbox'].create(msg)
           self.write([unprocess['id']],{'processed':True})
             
+    @api.model
+    def _callback_response(self,model_name, method_name, args,msg):
+      _logger.info('Ejecuto el callback')
+      args = str2tuple(args)
+      openerp.modules.registry.RegistryManager.check_registry_signaling(self._cr.dbname)
+      registry = openerp.registry(self._cr.dbname)
+      if model_name in registry:
+          model = registry[model_name]
+          if hasattr(model, method_name):
+            
+            response = getattr(model, method_name)(self._cr, self._uid, msg,*args)
+            openerp.modules.registry.RegistryManager.signal_caches_change(self._cr.dbname)
+            return response
+          else:
+            msg = "Method `%s.%s` does not exist." % (model_name, method_name)
+            _logger.warning(msg)
 
 
     def init(self, cr):
@@ -539,8 +561,19 @@ class gammu_expected_responses(models.Model):
     creatorid=fields.Text(string="Creator ID")
     processed=fields.Boolean(string="Processed")
 
+    def create(self,cr,uid,vals,context=None):
+      # Antes de crear un nuevo expeted response Marco como procesadas las anteriores para evitar solapamiento de respues
+      # porque suelen disponer de el mismo set.
+      # La respuesta valida es siempre la ultima
+      # TODO: agregar un campo de set o tipo de respuesta esperada para filtrar y poder dejar el expeted viejo si procesar
+      # en caso de ser una respuesta que no selape con la actual
 
+      args=[('name','=',vals['name']),('processed','=',False)]
+      olds_id=self.search(cr,uid,args)
+      if olds_id:
+        self.write(cr,uid,olds_id,{'processed':True})
 
+      return super(gammu_expected_responses,self).create(cr,uid,vals,context)
 
     def dummie(self,cr,uid,msn):
       _logger.info('dummie')
