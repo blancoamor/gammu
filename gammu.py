@@ -501,20 +501,21 @@ class gammu_inbox(models.Model):
             if response != False :
               self.write([unprocess['id']],{'processed':True})
         else :
-
-          #TODO orphan funtion
-          msg={
-              'name':unprocess['name'],
-              'text':'Este es un servicio automatizado. Por cualquier consulta comuniquese al 0810 666 8964',
-              'sending_datetime': datetime.now(),
-              'send_before':'23:59:59',
-              'send_after':'00:00:00',
-              'creatorid':'odoo',
-              'multipart':False,
-              'sending_time_out':datetime.now(),
-          }
-          self.env['gammu.outbox'].create(msg)
-          self.write([unprocess['id']],{'processed':True})
+          say_ok=  re.compile('.*[ok|OK|Ok|oK].*')
+          if not say_ok.search(unprocess['text'])
+            #TODO orphan funtion
+            msg={
+                'name':unprocess['name'],
+                'text':'Este es un servicio automatizado. Por cualquier consulta comuniquese al 0810 666 8964',
+                'sending_datetime': datetime.now(),
+                'send_before':'23:59:59',
+                'send_after':'00:00:00',
+                'creatorid':'odoo',
+                'multipart':False,
+                'sending_time_out':datetime.now(),
+            }
+            self.env['gammu.outbox'].create(msg)
+            self.write([unprocess['id']],{'processed':True})
             
     @api.model
     def _callback_response(self,model_name, method_name, args,msg):
