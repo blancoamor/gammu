@@ -465,6 +465,9 @@ class gammu_inbox(models.Model):
     name=fields.Char(string="Sender Number")
     text=fields.Text(string="msg")
     processed=fields.Boolean(string="Processed")
+    create_date=fields.Datetime()
+    write_date=fields.Datetime()
+
 
     @api.model
     def create(self,vals):
@@ -490,7 +493,7 @@ class gammu_inbox(models.Model):
 
         response_ids=expected_responses_obj.search_read([('processed','=',False),('name','=',unprocess['name'])],['model', 'function', 'args'])
         # Existe respuesta y no es una  llamada perdida
-        if response_ids and llamadaPerdida.search(unprocess['text']):
+        if response_ids and not llamadaPerdida.search(unprocess['text']):
           for response_id in response_ids:
             _logger.info('Recorro las respuestas %r ' , response_id)
 
@@ -510,7 +513,7 @@ class gammu_inbox(models.Model):
               'multipart':False,
               'sending_time_out':datetime.now(),
           }
-          #self.env['gammu.outbox'].create(msg)
+          self.env['gammu.outbox'].create(msg)
           self.write([unprocess['id']],{'processed':True})
             
     @api.model

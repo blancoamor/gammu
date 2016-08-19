@@ -104,6 +104,9 @@
                     <field name="name"/>
                     <field name="text"/>
                     <field name="processed"/>
+                    <field name="create_date"/>
+                    <field name="write_date"/>
+
                 </tree>
             </field>
         </record>
@@ -116,6 +119,9 @@
                         <field name="name"/>
                         <field name="text"/>
                         <field name="processed"/>
+                        <field name="create_date"/>
+                        <field name="write_date"/>
+
                     </group>
                 </form>
             </field>
