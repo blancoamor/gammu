@@ -501,7 +501,7 @@ class gammu_inbox(models.Model):
               self.write([unprocess['id']],{'processed':True})
         else :
           say_ok=  re.compile('.*[ok|OK|Ok|oK].*')
-          if not say_ok.search(unprocess['text'])
+          if not say_ok.search(unprocess['text']) : 
             #TODO orphan funtion
             msg={
                 'name':unprocess['name'],
