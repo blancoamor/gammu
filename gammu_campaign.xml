@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+
+
+            <record id="campain_from_dni_form" model="ir.ui.view">
+            <field name="name">campain.from.dni.form</field>
+            <field name="model">campain.from.dni</field>
+            <field name="arch" type="xml">
+                <form>
+
+                    <sheet>
+                        <group col="2">
+                            <field name="phone_list"/>
+                            <field name="gammu_campaign_id" value="active_id"/>
+
+                        </group>
+                        <footer >
+                            <button string="Buscar telefonos" type="object" name="by_phone"/>
+                            <button string="Buscar DNI" type="object" name="by_dni"/>
+                        </footer>
+                            
+                    </sheet>
+                </form>
+            </field>
+        </record>
+  
+
+        <record model="ir.actions.act_window" id="wiz_campain_from_dni">
+            <field name="name">Agregar masivo</field>
+            <field name="res_model">campain.from.dni</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+
+
+        <record id="gammu_campaing_tree_view" model="ir.ui.view">
+            <field name="name">gammu.campaign.tree</field>
+            <field name="model">gammu.campaign</field>
+            <field name="arch" type="xml">
+                <tree string="Campaing">
+                    <field name="name"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+        <record id="gammu_campaing" model="ir.ui.view">
+            <field name="name">gammu.campaign.form</field>
+            <field name="model">gammu.campaign</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button string="presupuestos" type="object" name="presupuestos" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                        
+                        <button string="Enviar" type="object" name="send" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                        <button string="Agregar masivo" type="action" name="%(gammu.wiz_campain_from_dni)d" attrs="{'invisible': [('state', '!=', 'draft')]} "  context="{'gammu_campaign_id': active_id}" />
+
+
+                        <!--This will create the statusbar, thanks to the widget. -->
+                        <field name="state" widget="statusbar"/>
+                    </header>
+
+                    <sheet>
+                        <group col="2">
+                            <field name="name"/>
+                            <field name="template_text"/>
+                            
+                            <field name="opportunity_user_id"/>
+                            <field name="sms">
+                                <tree string="sms" editable="bottom">
+                                    <field name="name"/>
+                                    <field name="partner_id"/>
+                                    <field name="text"/>                                    
+                                </tree>
+                            </field>
+
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="action_gammu_campaing" model="ir.actions.act_window">
+            <field name="name">Campañas</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">gammu.campaign</field>
+            <field name="view_id" ref="gammu_campaing_tree_view"/>
+            <field name="view_mode">tree,form</field>
+            <field name="view_type">form</field>
+            <field name="target">current</field>
+        </record>
+        <menuitem action="action_gammu_campaing" id="menu_action_gammu_campaing" parent="gammu.menu_gammu" sequence="10"/>
+
+    </data>
+</openerp>

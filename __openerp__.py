@@ -33,7 +33,7 @@ Este modulo crea las tabals de gammu y vistas para crear los registros
     'website': 'http://sipecu.com.ar',
     'depends': [],
     'installable': True,
-    'data': ['gammu.xml'
+    'data': ['gammu.xml', 'gammu_campaign.xml'
     ],
     'images':[],
 

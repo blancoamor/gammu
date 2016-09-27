@@ -489,14 +489,13 @@ class gammu_inbox(models.Model):
       llamadaPerdida=re.compile('Recibiste.*llamada')
 
       for unprocess in unprocess_items:
-        _logger.info('Recorro Items sin procesar %r ' , unprocess_items)
+        # Recorro Items sin procesar
 
         response_ids=expected_responses_obj.search_read([('processed','=',False),('name','=',unprocess['name'])],['model', 'function', 'args'])
         # Existe respuesta y no es una  llamada perdida
         if response_ids and not llamadaPerdida.search(unprocess['text']):
           for response_id in response_ids:
-            _logger.info('Recorro las respuestas %r ' , response_id)
-
+            #Recorro las respuestas
             response = self._callback_response(response_id['model'], response_id['function'], response_id['args'],unprocess['text'])
             if response != False :
               self.write([unprocess['id']],{'processed':True})
@@ -506,7 +505,7 @@ class gammu_inbox(models.Model):
             #TODO orphan funtion
             msg={
                 'name':unprocess['name'],
-                'text':'Este es un servicio automatizado. Por cualquier consulta comuniquese al 0810 666 8964',
+                'text':'Este es un servicio automatizado. Por cualquier consulta comuniquese al 0810 666 8964. BLANCOAMOR',
                 'sending_datetime': datetime.now(),
                 'send_before':'23:59:59',
                 'send_after':'00:00:00',

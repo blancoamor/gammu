@@ -54,7 +54,7 @@
                 </search>
             </field>
         </record>
-        <menuitem id="menu_gammu" parent="base.menu_base_config" sequence="1"/>
+        <menuitem id="menu_gammu" name="SMS" parent="base.marketing_menu" sequence="5"/>
         <menuitem action="action_gammusentitems" id="menu_action_gammu_sentitems" parent="gammu.menu_gammu" sequence="1"/>
         <record id="gammu_outbox_tree" model="ir.ui.view">
             <field name="name">gammu.outbox.tree</field>
