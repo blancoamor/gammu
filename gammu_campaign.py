@@ -25,7 +25,7 @@ import psycopg2
 import re
 
 
-from datetime import datetime
+from datetime import datetime , timedelta
 
 
 from openerp import models, fields, api ,  SUPERUSER_ID, netsvc
@@ -105,11 +105,18 @@ class gammu_campaign(models.Model):
     @api.one
     def send(self):
         self.state='sending'
+        item_minute = 10
+        item_count = 0
+
         for sms in self.sms :
             if sms.name:
+                item_count = item_count + 1
+                
+                delay = datetime.now() + timedelta(minutes=int(item_count/item_minute)) 
+
                 outbox={'name':sms.name,
                         'text':sms.text,
-                        'sending_datetime':datetime.now(),'creatorid':'odoo','sending_time_out':datetime.now(),
+                        'sending_datetime':delay,'creatorid':'odoo','sending_time_out':delay,
                         'send_before':'23:00:00','send_after':'00:00:00','multipart':False}
                 outbox_id=self.env['gammu.outbox'].sudo().create(outbox)
 
