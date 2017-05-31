@@ -368,13 +368,13 @@ class gammu_outbox(models.Model):
 
     name=fields.Char(string="Destination Number")
     text=fields.Text(string="msg")
-    sending_datetime=fields.Datetime(string="Sending Date Time")
+    sending_datetime=fields.Datetime(string="Sending Date Time",default=fields.Datetime.now())
     send_before=fields.Char(string="Send Before",default="23:59:59")
     send_after=fields.Char(string="Send After",default="00:00:00")
     creatorid=fields.Text(string="Creator ID",default="odoo")
     multipart=fields.Boolean(string="MultiPart")
     senderid=fields.Char(string="senderID",default="")
-    sending_time_out=fields.Datetime(string="Sending time out")
+    sending_time_out=fields.Datetime(string="Sending time out",default=fields.Datetime.now())
     retries=fields.Integer(string="Retries",default=0)
 
     def init(self, cr):
@@ -389,11 +389,27 @@ class gammu_outbox(models.Model):
 
         )""")
 
+    @api.multi
+    def unlink(self):
+      for sms in self :
+        self._cr.execute("""delete from  outbox where "ID" = %f """%(sms.id))
+
+
     @api.model
-    def unlink(self,ids):
-      
-      self._cr.execute("""delete from  outbox where "ID" IN %s """,(ids) )
-      return true
+    def send_test_now(self, phone,text):
+
+      return self.create({
+              'name':phone,
+              'text':text,
+              'sending_datetime':fields.Datetime.now(),
+              'send_before':"23:59:59",
+              'send_after':"00:00:00",
+              'creatorid':'odoo',
+              'multipart':False,
+              'sending_time_out':fields.Datetime.now(),
+              })
+
+
 
 
     @api.model
@@ -427,6 +443,16 @@ class gammu_outbox(models.Model):
 
         
         return recs
+    """
+    @api.one
+    def resend_errors(self,msg,days=4):
+      errors=self.env['gammu.sentitems'].search([('status','=','SendingError'),
+                                                 ('sending_datetime','>',datetime.datetime.now() -relativedelta(day=days)) ),
+                                                 ('text','ilike',msg)
+
+                                                ])
+    """
+
 
 class gammu_sentitems(models.Model):
     _name = 'gammu.sentitems'

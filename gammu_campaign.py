@@ -133,7 +133,7 @@ class gammu_campaign(models.Model):
     @api.one
     def response(self,user_id,phone,partner_id):
         lead=self.env['crm.lead'].create({
-            'name':'Respuesta la la campaña'   ,
+            'name':'Respuesta la la campaña',
             'user_id':user_id,
             'partner_id':partner_id,
             'phone':phone,
@@ -266,6 +266,7 @@ class gammu_campaign_sms(models.Model):
 
                 return '+549' + str(caracteristica)  + str(mobile[6])+ str(mobile[7])
         return False
+
 
 
             
